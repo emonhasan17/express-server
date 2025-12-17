@@ -1,21 +1,21 @@
-import express, { Request, Response } from "express"
+import express, { Request, response, Response } from "express"
 import { Pool } from "pg"
 import dotenv from "dotenv"
 import path from "path"
 
-dotenv.config({ path: path.join(process.cwd(), ".env") })
-
+dotenv.config({path: path.join(process.cwd(), ".env")});
 
 const app = express()
 const port = 5000
 
 // parser
-app.use(express.json())
-// app.use(express.urlencoded())
+app.use(express.json());
+// app.use(express.urlencoded());
+
 
 // db
 const pool = new Pool({
-    connectionString: `${process.env.CONNECTION_STR}`
+    connectionString: `${process.env.CONNECTION_STR}`,
 })
 
 const initDb = async () => {
@@ -23,14 +23,14 @@ const initDb = async () => {
         CREATE TABLE IF NOT EXISTS users(
         id SERIAL PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
-        email VARCHAR(100) UNIQUE NOT NULL,
+        email VARCHAR(100) NOT NULL,
         age INT,
         phone VARCHAR(15),
         address TEXT,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
         )
-        `);
+        `)
 
     await pool.query(`
             CREATE TABLE IF NOT EXISTS todos(
@@ -38,24 +38,23 @@ const initDb = async () => {
             user_id INT REFERENCES users(id) ON DELETE CASCADE,
             title VARCHAR(200) NOT NULL,
             description TEXT,
-            completed BOOLEAN DEFAULT FALSE,
+            completed BOOLEAN DEFAULT false,
             due_date DATE,
             created_at TIMESTAMP DEFAULT NOW(),
             updated_at TIMESTAMP DEFAULT NOW()
             )
-            `);
+            `)
 }
-initDb()
+initDb();
 
 
 
 app.get('/', (req: Request, res: Response) => {
-    res.send('Hello next level developers!')
+    res.send('Hello next level developer')
 })
 
 app.post('/', (req: Request, res: Response) => {
-    console.log(req.body)
-
+    console.log(req.body);
     res.status(201).json({
         success: true,
         message: "api is working",
